@@ -1,0 +1,22 @@
+<head>
+	<meta charset="UTF-8"/>
+	<!--[if lt IE 9]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<!--<script type="text/javascript" src="socket.io/socket.io.js"></script>-->
+    <script type="text/javascript" src="resources/js/mazeMaker.js"></script> 
+	<script type="text/javascript" src="resources/js/vacuumCleaner.js"></script>        
+	<script type="text/javascript" src="resources/js/main.js"></script>
+</head>
+
+<html lang="en">	
+    <body align="center">
+		<section id="dirtyRoomArea">
+			<canvas id="dirtyRoom"></canvas>  
+		</section>
+		<footer>
+			<input id="btnRandomRoom" type="button" value="Generate Random Room" onclick="generateRoom('random')">
+			<input id="btnMazeRoom" type="button" value="Generate Maze Room"   onclick="generateRoom('maze')">
+		</footer>
+    </body>
+</html>
