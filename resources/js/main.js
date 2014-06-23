@@ -1,6 +1,6 @@
 var squareMap = [];
 var squareTypes = ['#fff','#000','#bbb']; //#fff - clean / 1 - #bbb - dirty / 2 - #000 - obstacle
-var squareSize = 60;
+var squareSize = 30;
 var canvasSize = 600;	
 var canvas = '';
 
@@ -30,25 +30,19 @@ function createRandomDirtyRoom() {
 
 //Function to make the Maze with some animation...
 function animateTheMaze(maze) {
-    var hasWallOutsideTheMaze = false;	
-
-    for(var m=0;m<squareMap.length;m++) {
-	if(squareMap[m][3]==0){
-	    hasWallOutsideTheMaze = true;
-	}
-    }
-
+    
     maze.makeTheMaze(squareMap);
 
-    if(hasWallOutsideTheMaze) {	
-        requestAnimFrame(function() {
+    if(maze.getVisitedCells() < squareMap.length) {	
+        /*requestAnimFrame(function() {
             setTimeout(function() {
 	        animateTheMaze(maze);
             }, 1);
-        });			
+        });*/			
+        animateTheMaze(maze);
     } else {
 	//Create the Dirty
-	console.log('Finished!');
+        console.log('Finished!');
     }
 }
 
@@ -96,8 +90,6 @@ function animate(vacuumCleanerList, canvas, context) {
         v.chooseDestiny(squareMap); 
         drawAgent(v, context);
     });
-    //vacuumCleanerList[1].chooseDestiny(squareMap);	
-    //drawAgent(vacuumCleanerList[1], context);
 
     // request new frame
     requestAnimFrame(function() {
