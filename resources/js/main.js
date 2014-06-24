@@ -1,6 +1,6 @@
 var squareMap = [];
 var squareTypes = ['#fff','#000','#bbb']; //#fff - clean / 1 - #bbb - dirty / 2 - #000 - obstacle
-var squareSize = 15;
+var squareSize = 30;
 var canvasSize = 600+squareSize;	
 var canvas = '';
 
@@ -29,21 +29,11 @@ function createRandomDirtyRoom() {
 }  
 
 //Function to make the Maze with some animation...
-function animateTheMaze(mazeMaker) {
-    
+function animateTheMaze(mazeMaker) {    
     mazeMaker.makeTheMaze(squareMap);
-
-    if(mazeMaker.hasCellsToVisit()) {			
-        //requestAnimFrame(function() {
-        //    setTimeout(function() {
-	    //        animateTheMaze(mazeMaker);
-        //    }, 1);
-        //});			
+    if(mazeMaker.hasCellsToVisit()) {			       		
         animateTheMaze(mazeMaker);
-    } else {
-		//Create the Dirty
-        console.log('Finished!');
-    }
+    } 
 }
 
 //Function to create the maze dirty room
@@ -61,8 +51,8 @@ function createMazeDirtyRoom() {
 	
     for (var x = squareSize; x < (canvasSize+1)-squareSize; x += squareSize*2) {
         for (var y = squareSize; y < (canvasSize+1)-squareSize; y += squareSize*2) { 	   		    
-	    squareMap.push([x,y,'#fff',2]);						    					
-	}		
+			squareMap.push([x,y,'#fff', 2]);						    					
+		}		
     }
     
     var mazeMaker = new MazeMaker();
@@ -77,11 +67,11 @@ function drawDirtyRoomTiles(context) {
     for (var i = 0; i < squareMap.length; i++) {  
         context.beginPath();
         context.rect(squareMap[i][0],squareMap[i][1], squareSize, squareSize);
-        context.fillStyle = (squareMap[i][3]==2)?'#f00':squareMap[i][2];
+        context.fillStyle = squareMap[i][2];
         context.fill();
         context.lineWidth = 1;
-        context.strokeStyle = '#bbb';
-        context.stroke(); 
+        context.strokeStyle = '#bbb';					
+        context.stroke(); 		
    } 
 }			
 
@@ -135,7 +125,7 @@ function generateRoom(type) {
 		
 	var v1 = vacuumCleanerList[0];
 	v1.color = '#afa';
-	v1.chooseDestiny = function(squareMap) {	    
+	v1.chooseDestiny = function(squareMap) {	    		
 		/*
 		Random walking example 1
 		Random Agent who cleans the dirty in a continuous direction when the dirty is found!
