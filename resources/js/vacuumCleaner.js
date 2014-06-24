@@ -5,18 +5,18 @@ function VacuumCleaner() {
     this.init = function(properties) {
         context.x = properties.x;
         context.y = properties.y;
-	context.color = properties.color;
+		context.color = properties.color;
         context.squareSize = properties.squareSize;
         context.canvasSize = properties.canvasSize;
         context.width = properties.squareSize;
         context.height = properties.squareSize;        
-	context.dirtyIndex = -1;
-	context.directionIndex = 0;
-	context.directionsArray = [];
-	context.directionsArray.push(this.goUp());
-	context.directionsArray.push(this.goRight());
-	context.directionsArray.push(this.goDown());
-	context.directionsArray.push(this.goLeft());				
+		context.dirtyIndex = -1;
+		context.directionIndex = 0;
+		context.directionsArray = [];
+		context.directionsArray.push(context.goUp());
+		context.directionsArray.push(context.goRight());
+		context.directionsArray.push(context.goDown());
+		context.directionsArray.push(context.goLeft());				
     };
     
     this.goRight = function() {	  
@@ -37,46 +37,46 @@ function VacuumCleaner() {
     this.goLeft = function() {
         function action() {
             if(context.getX() > 0) {
-	        context.setX(context.getX() - context.getSquareSize());
-	        if(context.hasObstacle()) {
-		    context.setX(context.getX() + context.getSquareSize());
-		    return false; 
-	        }
-	        return true;
-            }
-            return false;
-        }
-        return action;
+				context.setX(context.getX() - context.getSquareSize());
+				if(context.hasObstacle()) {
+					context.setX(context.getX() + context.getSquareSize());
+					return false; 
+				}
+				return true;
+			}
+			return false;
+		}
+		return action;
     };
 
     this.goUp = function() {
-	function action() {
-	    if(context.getY() > 0) {
-		context.setY(context.getY() - context.getSquareSize());
-		if(context.hasObstacle()) {
-		    context.setY(context.getY() + context.getSquareSize());
-		    return false; 
+		function action() {
+			if(context.getY() > 0) {
+				context.setY(context.getY() - context.getSquareSize());
+				if(context.hasObstacle()) {
+					context.setY(context.getY() + context.getSquareSize());
+					return false; 
+				}
+				return true;
+			}
+			return false;
 		}
-		return true;
-	    }
-	    return false;
-	}
-	return action;
+		return action;
     };
     
     this.goDown = function() {
 	function action() {
-	    if(context.getY() < context.getCanvasSize() - context.getHeight()) {
-		context.setY(context.getY() + context.getSquareSize());
-		if(context.hasObstacle()) {
-		    context.setY(context.getY() - context.getSquareSize());
-		    return false; 
+		if(context.getY() < context.getCanvasSize() - context.getHeight()) {
+			context.setY(context.getY() + context.getSquareSize());
+			if(context.hasObstacle()) {
+				context.setY(context.getY() - context.getSquareSize());
+				return false; 
+			}
+			return true;
+			}
+			return false;
 		}
-		return true;
-	    }
-	    return false;
-	}
-	return action;
+		return action;
     };
 
     this.goToRandomDirection = function() {
@@ -87,25 +87,25 @@ function VacuumCleaner() {
  	
     this.hasObstacle = function() {
         for(var i=0;i<squareMap.length;i++) {
-	    if(squareMap[i][0]==context.getX() && squareMap[i][1]==context.getY()) {
-		if(squareMap[i][2]=='#000'){
-		    return true;	
-		} 
-	    } 
-	}
-	return false;
+			if(squareMap[i][0]==context.getX() && squareMap[i][1]==context.getY()) {
+				if(squareMap[i][2]=='#000'){
+					return true;	
+				} 
+			} 
+		}
+		return false;
     };
   
     this.hasDirty = function(squareMap) {    
         for(var i=0;i<squareMap.length;i++) {
-	    if(squareMap[i][0]==context.getX() && squareMap[i][1]==context.getY()) {
-		if(squareMap[i][2]=='#bbb'){
-		    context.setDirtyIndex(i);
-		    return true;	
-	        } 
-	    } 
-	}
-	return false;
+			if(squareMap[i][0]==context.getX() && squareMap[i][1]==context.getY()) {
+				if(squareMap[i][2]=='#bbb'){
+					context.setDirtyIndex(i);
+					return true;	
+				} 
+			} 
+		}
+		return false;
     };
 
     this.cleanIt = function(squareMap) {
