@@ -88,6 +88,7 @@ function MazeMaker() {
             if((x > 0 && y > 0) && (x < context.canvasSize - context.width) && (y < context.canvasSize - context.height)) {
                 if(x==squareMap[i][0] && y==squareMap[i][1]) {
                     squareMap[i][2] = (Math.floor(Math.random()*100)%2==0)?'#fff':'#bbb';
+					squareMap[i][3] = 0;
                 }
             }
         }
