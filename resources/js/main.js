@@ -1,6 +1,6 @@
 var squareMap = [];
 var squareTypes = ['#fff','#000','#bbb']; //#fff - clean / 1 - #bbb - dirty / 2 - #000 - obstacle
-var squareSize = 60;
+var squareSize = 30;
 var canvasSize = 600+squareSize;	
 var canvas = '';
 var numberOfCells = 0;
@@ -80,7 +80,7 @@ function drawDirtyRoomTiles(context) {
     for (var i = 0; i < squareMap.length; i++) {  
         context.beginPath();
         context.rect(squareMap[i][0],squareMap[i][1], squareSize, squareSize);
-        context.fillStyle = squareMap[i][2];
+        context.fillStyle = (squareMap[i][3]==2)?'#f00':squareMap[i][2];
         context.fill();
         context.lineWidth = 1;
         context.strokeStyle = '#bbb';
@@ -96,10 +96,10 @@ function animate(vacuumCleanerList, canvas, context) {
     drawDirtyRoomTiles(context);
     
     //Vacuum Cleaner brain goes here...
-    //vacuumCleanerList.map(function(v){
-    //    v.chooseDestiny(squareMap); 
-    //    drawAgent(v, context);
-    //});
+    vacuumCleanerList.map(function(v){
+        v.chooseDestiny(squareMap); 
+        drawAgent(v, context);
+    });
 
     // request new frame
     requestAnimFrame(function() {

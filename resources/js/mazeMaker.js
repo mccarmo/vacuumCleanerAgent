@@ -1,5 +1,5 @@
 function MazeMaker() {
-	var context = this;
+    var context = this;
     var x,y,squareSize,canvasSize,width,height,visitedCells,pivotCell,squareMapCellsToVisit,currentNeighbors;
    
     this.init = function(properties) {
@@ -31,9 +31,9 @@ function MazeMaker() {
         if(found) {                 		  	
             //...if it has unvisited neighbors, choose a random one... 
 	    var randomNeighbor = context.currentNeighbors[Math.floor(Math.random()*context.currentNeighbors.length)];
-            //Destroy the Wall between the original cell and the current random cell
+            //Destroy the Wall between the pivot cell and the current random cell
             context.breakTheWallBetweenCells(squareMap,context.pivotCell,randomNeighbor);
-            //Make the current random cell the origin cell
+            //Make the current random cell the pivot cell
             context.pivotCell = randomNeighbor; 	   
         } else {
             context.pivotCell = context.squareMapCellsToVisit[Math.floor(Math.random()*context.squareMapCellsToVisit.length)];
@@ -50,7 +50,7 @@ function MazeMaker() {
              //Right
              (context.squareMapCellsToVisit[i][0]==(pivotCell[0]+(context.squareSize * 2)) && context.squareMapCellsToVisit[i][1]==pivotCell[1]) ||
              //Left
-             (context.squareMapCellsToVisit[i][0]==(pivotCell[0]-(context.squareSize * 2)) && context.squareMapCellsToVisit[i][1]==(pivotCell[1] - (context.squareSize * 2)))) {
+             (context.squareMapCellsToVisit[i][0]==(pivotCell[0]-(context.squareSize * 2)) && context.squareMapCellsToVisit[i][1]==(pivotCell[1]))) {
                if(context.squareMapCellsToVisit[i][3]==2) {
                    context.currentNeighbors.push(context.squareMapCellsToVisit[i]);
                    return true;
@@ -62,30 +62,37 @@ function MazeMaker() {
 
     this.breakTheWallBetweenCells = function(squareMap,pivotCell,randomNeighbor) {
         var x = 0, y = 0;	
+       
         if(randomNeighbor[0] == pivotCell[0]) {
-            x = pivotCell[0];         
-        } else if (randomNeighbor[0] < pivotCell[0]) {
-            x = pivotCell[0] - context.squareSize;
-        } else {
-            x = pivotCell[0] + context.squareSize;
+            x = pivotCell[0];
+            
+            if (randomNeighbor[1] < pivotCell[1]) {
+                y = pivotCell[1] - context.squareSize;
+            } else if (randomNeighbor[1] > pivotCell[1]) {
+                y = pivotCell[1] + context.squareSize;
+            }         
         }
+        
         if(randomNeighbor[1] == pivotCell[1]) {
-            y = pivotCell[1];         
-        } else if (randomNeighbor[1] < pivotCell[1]) {
-            y = pivotCell[1] - context.squareSize;
-        } else {
-            y = pivotCell[1] + context.squareSize;
-        }
-        if((x > 0 && y > 0) && (x < context.canvasSize - context.width) && (y < context.canvasSize - context.height)) {
-            for(var i=0;i<squareMap.length;i++) {
-                if(pivotCell[0]==squareMap[i][0] && pivotCell[1]==squareMap[i][1]) {
-                    squareMap[i][3] = 1;
-                }
+            y = pivotCell[1];
+            if (randomNeighbor[0] < pivotCell[0]) {
+                x = pivotCell[0] - context.squareSize;
+            } else if (randomNeighbor[0] > pivotCell[0]) {
+                x = pivotCell[0] + context.squareSize;
+            }         
+        } 
+
+        
+        for(var i=0;i<squareMap.length;i++) {
+            if(pivotCell[0]==squareMap[i][0] && pivotCell[1]==squareMap[i][1]) {
+                squareMap[i][3] = 1;
+            } else if((x > 0 && y > 0) && (x < context.canvasSize - context.width) && (y < context.canvasSize - context.height)) {
                 if(x==squareMap[i][0] && y==squareMap[i][1]) {
                     squareMap[i][2] = '#fff';
                 }
             }
         }
+        
     };
 
     this.hasCellsToVisit = function() {
