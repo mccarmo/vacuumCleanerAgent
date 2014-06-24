@@ -1,9 +1,8 @@
 var squareMap = [];
 var squareTypes = ['#fff','#000','#bbb']; //#fff - clean / 1 - #bbb - dirty / 2 - #000 - obstacle
-var squareSize = 30;
+var squareSize = 20;
 var canvasSize = 600+squareSize;	
 var canvas = '';
-var numberOfCells = 0;
 
 //Function to draw the agents...
 function drawAgent(vacuumCleaner, context) {        
@@ -33,8 +32,6 @@ function createRandomDirtyRoom() {
 function animateTheMaze(mazeMaker) {
     
     mazeMaker.makeTheMaze(squareMap);
-	
-    numberOfCells = 0;
 
     if(mazeMaker.hasCellsToVisit()) {			
         requestAnimFrame(function() {
@@ -44,7 +41,7 @@ function animateTheMaze(mazeMaker) {
         });			
         //animateTheMaze(mazeMaker);
     } else {
-	//Create the Dirty
+		//Create the Dirty
         console.log('Finished!');
     }
 }
@@ -54,16 +51,16 @@ function createMazeDirtyRoom() {
     //Mark all squares as Walls
     for (var x = 0; x < (canvasSize+1); x += squareSize) {
         for (var y = 0; y < (canvasSize+1); y += squareSize) { 
-	    if(x == 0 || y == 0 || x >= canvasSize-squareSize || y >= canvasSize-squareSize) {
-		squareMap.push([x,y,'#000',1]);
-	    } else {
-		squareMap.push([x,y,'#000',0]);
-	    }	
+			if(x == 0 || y == 0 || x >= canvasSize-squareSize || y >= canvasSize-squareSize) {
+				squareMap.push([x,y,'#000',1]);
+			} else {
+				squareMap.push([x,y,'#000',0]);
+			}	
         }
     }    
 	
-    for (var x = squareSize; x < (canvasSize+1); x += squareSize*2) {
-        for (var y = squareSize; y < (canvasSize+1); y += squareSize*2) { 	   		    
+    for (var x = squareSize; x < (canvasSize+1)-squareSize; x += squareSize*2) {
+        for (var y = squareSize; y < (canvasSize+1)-squareSize; y += squareSize*2) { 	   		    
 	    squareMap.push([x,y,'#fff',2]);						    					
 	}		
     }
