@@ -1,6 +1,6 @@
 var squareMap = [];
 var squareTypes = ['#fff','#000','#bbb']; //#fff - clean / 1 - #bbb - dirty / 2 - #000 - obstacle
-var squareSize = 20;
+var squareSize = 15;
 var canvasSize = 600+squareSize;	
 var canvas = '';
 
@@ -21,8 +21,8 @@ function createRandomDirtyRoom() {
         for (var y = 0; y < (canvasSize+1); y += squareSize) { 								
             if(x == 0 || y == 0 || x >= canvasSize-squareSize || y >= canvasSize-squareSize) {
                 squareMap.push([x,y,'#fff',0]);
-	    } else {
-		squareMap.push([x,y,squareTypes[Math.floor(Math.random()*squareTypes.length)],0]);
+			} else {
+				squareMap.push([x,y,squareTypes[Math.floor(Math.random()*squareTypes.length)],0]);
             }				
         }
     }    	
@@ -34,12 +34,12 @@ function animateTheMaze(mazeMaker) {
     mazeMaker.makeTheMaze(squareMap);
 
     if(mazeMaker.hasCellsToVisit()) {			
-        requestAnimFrame(function() {
-            setTimeout(function() {
-	            animateTheMaze(mazeMaker);
-            }, 1);
-        });			
-        //animateTheMaze(mazeMaker);
+        //requestAnimFrame(function() {
+        //    setTimeout(function() {
+	    //        animateTheMaze(mazeMaker);
+        //    }, 1);
+        //});			
+        animateTheMaze(mazeMaker);
     } else {
 		//Create the Dirty
         console.log('Finished!');
@@ -87,7 +87,7 @@ function drawDirtyRoomTiles(context) {
 
 //Function to animate the game!
 function animate(vacuumCleanerList, canvas, context) {	
-    // clear
+    //Clear
     context.clearRect(0, 0, canvas.width, canvas.height);
 			
     drawDirtyRoomTiles(context);
@@ -98,7 +98,7 @@ function animate(vacuumCleanerList, canvas, context) {
         drawAgent(v, context);
     });
 
-    // request new frame
+    //Request new frame
     requestAnimFrame(function() {
         setTimeout(function() {
 	    animate(vacuumCleanerList, canvas, context);
@@ -125,60 +125,59 @@ function generateRoom(type) {
     })();
         
     var vacuumCleanerList = []; 	
-    if(type=='random') {
-        /*Creating four vacuum cleaner agents on each corner of the 'world' 
-          and give then some brain (chooseDestiny function)....*/
-        for(var i = 0;i<4;i++) {
-	    var vacuumCleaner = new VacuumCleaner();
-	    vacuumCleaner.init({'x':0,'y':0,'squareSize':squareSize,'canvasSize':canvasSize});
-	    vacuumCleanerList.push(vacuumCleaner);		
+	/*Creating four vacuum cleaner agents on each corner of the 'world' 
+	  and give then some brain (chooseDestiny function)....*/
+	for(var i = 0;i<4;i++) {
+		var vacuumCleaner = new VacuumCleaner();
+		vacuumCleaner.init({'x':0,'y':0,'squareSize':squareSize,'canvasSize':canvasSize});
+		vacuumCleanerList.push(vacuumCleaner);		
 	}
 		
 	var v1 = vacuumCleanerList[0];
 	v1.color = '#afa';
 	v1.chooseDestiny = function(squareMap) {	    
-	    /*
-            Random walking example 1
-	    Random Agent who cleans the dirty in a continuous direction when the dirty is found!
-	    The directionsArray is a internal array that can be used to simplify the code.
-  	    The directions on array are: up, right, down, left 
-	    The directionIndex, in this example, is the current index of the directionsArray, that initializes at "0". 		
-  	    */
-	    var move = v1.getDirectionsArray()[v1.getDirectionIndex()];		
-	    if(!move()) {
-		//if it can't move, randomize the direction...
-		v1.setDirectionIndex(Math.floor(Math.random()*v1.getDirectionsArray().length));							
-	    }
-	    //If has dirty on the floor...
-	    if(v1.hasDirty(squareMap)) {
-	        //...clean the dirty.
-	        v1.cleanIt(squareMap);			
-	    } else {
-		//if nothing to clean here, randomize the direction...
-		v1.setDirectionIndex(Math.floor(Math.random()*v1.getDirectionsArray().length));
-	    }					
+		/*
+		Random walking example 1
+		Random Agent who cleans the dirty in a continuous direction when the dirty is found!
+		The directionsArray is a internal array that can be used to simplify the code.
+		The directions on array are: up, right, down, left 
+		The directionIndex, in this example, is the current index of the directionsArray, that initializes at "0". 		
+		*/
+		var move = v1.getDirectionsArray()[v1.getDirectionIndex()];		
+		if(!move()) {
+			//if it can't move, randomize the direction...
+			v1.setDirectionIndex(Math.floor(Math.random()*v1.getDirectionsArray().length));							
+		}
+		//If has dirty on the floor...
+		if(v1.hasDirty(squareMap)) {
+			//...clean the dirty.
+			v1.cleanIt(squareMap);			
+		} else {
+			//if nothing to clean here, randomize the direction...
+			v1.setDirectionIndex(Math.floor(Math.random()*v1.getDirectionsArray().length));
+		}					
 	};
-		
+	
 	var v2 = vacuumCleanerList[1];
 	v2.color = '#aff';
 	v2.x = 0;
 	v2.y = (canvasSize - squareSize);
 	v2.chooseDestiny = function(squareMap) {
-            //Random walking example 2
-            if(v2.hasDirty(squareMap)) {
-                v2.cleanIt(squareMap);
-            }
-	    if(v2.goUp()() && v2.hasDirty(squareMap)) {
-	        v2.cleanIt(squareMap);
-	    } else if(v2.goRight()() && v2.hasDirty(squareMap)) {
-                v2.cleanIt(squareMap);
-            } else if (v2.goDown()() && v2.hasDirty(squareMap)) {
-                v2.cleanIt(squareMap);
-            } else if (v2.goLeft()() && v2.hasDirty(squareMap)) {
-                v2.cleanIt(squareMap);
-            } else {
-                v2.goToRandomDirection();	 
-            }
+		//Random walking example 2
+		if(v2.hasDirty(squareMap)) {
+			v2.cleanIt(squareMap);
+		}
+		if(v2.goUp()() && v2.hasDirty(squareMap)) {
+			v2.cleanIt(squareMap);
+		} else if(v2.goRight()() && v2.hasDirty(squareMap)) {
+			v2.cleanIt(squareMap);
+		} else if (v2.goDown()() && v2.hasDirty(squareMap)) {
+			v2.cleanIt(squareMap);
+		} else if (v2.goLeft()() && v2.hasDirty(squareMap)) {
+			v2.cleanIt(squareMap);
+		} else {
+			v2.goToRandomDirection();	 
+		}
 	};
 	
 	var v3 = vacuumCleanerList[2];
@@ -186,11 +185,11 @@ function generateRoom(type) {
 	v3.x = (canvasSize - squareSize);
 	v3.y = 0;
 	v3.chooseDestiny = function(squareMap) {  
-            //Random Walking example 3                                              
-            v3.goToRandomDirection();
-            if(v3.hasDirty(squareMap)) {
-                v3.cleanIt(squareMap);
-            }
+		//Random Walking example 3                                              
+		v3.goToRandomDirection();
+		if(v3.hasDirty(squareMap)) {
+			v3.cleanIt(squareMap);
+		}
 	};
 	
 	var v4 = vacuumCleanerList[3];
@@ -198,33 +197,36 @@ function generateRoom(type) {
 	v4.x = (canvasSize - squareSize);
 	v4.y = (canvasSize - squareSize);
 	v4.chooseDestiny = function(squareMap) {
-            //Circle walking...
-	    if(!v4.getDirectionsArray()[v4.getDirectionIndex()]()) {
-                if(v4.getDirectionIndex()<v4.getDirectionsArray().length-1) {
-                    v4.setDirectionIndex(v4.getDirectionIndex()+1);
-                } else {
-                    v4.setDirectionIndex(0); 
-                }
-            }
-            if(v4.hasDirty(squareMap)) {
-                v4.cleanIt(squareMap);
-            }
+		//Circle walking...
+		if(!v4.getDirectionsArray()[v4.getDirectionIndex()]()) {
+			if(v4.getDirectionIndex()<v4.getDirectionsArray().length-1) {
+				v4.setDirectionIndex(v4.getDirectionIndex()+1);
+			} else {
+				v4.setDirectionIndex(0); 
+			}
+		}
+		if(v4.hasDirty(squareMap)) {
+			v4.cleanIt(squareMap);
+		}
 	};
+		
+    if(type=='random') {        
+		createRandomDirtyRoom();
+    } else if (type=='maze') {	     
+		v1.x = squareSize;
+		v1.y = squareSize;
+		
+		v2.x = canvasSize - squareSize*2;
+		v2.y = squareSize;
 	
-	createRandomDirtyRoom();
-    } else if (type=='maze') {	  
-        var v1 = new VacuumCleaner();
-	v1.init({'x':squareSize,'y':squareSize,'color':'#ffa','squareSize':squareSize,'canvasSize':canvasSize});	
-	v1.chooseDestiny = function(squareMap) {  
-            //Random Walking example 3                                              
-            v1.goToRandomDirection();
-            if(v1.hasDirty(squareMap)) {
-                v1.cleanIt(squareMap);
-            }
-	};    
-        vacuumCleanerList.push(v1);
-	createMazeDirtyRoom();
-    }
+		v3.x = squareSize;
+		v3.y = canvasSize - squareSize*2;
+	
+		v4.x = canvasSize - squareSize*2;
+		v4.y = canvasSize - squareSize*2;
+	
+		createMazeDirtyRoom();
+	}
 
     animate(vacuumCleanerList, canvas, context);
 }
