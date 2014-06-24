@@ -22,7 +22,11 @@ function createRandomDirtyRoom() {
             if(x == 0 || y == 0 || x >= canvasSize-squareSize || y >= canvasSize-squareSize) {
                 squareMap.push([x,y,'#fff',0]);
 			} else {
-				squareMap.push([x,y,squareTypes[Math.floor(Math.random()*squareTypes.length)],0]);
+			    var cell = [x,y,squareTypes[Math.floor(Math.random()*squareTypes.length)],0];
+				if(cell[2]=='#000') { 
+				    cell[3] = 1;
+				}
+				squareMap.push(cell);
             }				
         }
     }    	
@@ -40,12 +44,8 @@ function animateTheMaze(mazeMaker) {
 function createMazeDirtyRoom() {
     //Mark all squares as Walls
     for (var x = 0; x < (canvasSize+1); x += squareSize) {
-        for (var y = 0; y < (canvasSize+1); y += squareSize) { 
-			if(x == 0 || y == 0 || x >= canvasSize-squareSize || y >= canvasSize-squareSize) {
-				squareMap.push([x,y,'#000',1]);
-			} else {
-				squareMap.push([x,y,'#000',0]);
-			}	
+        for (var y = 0; y < (canvasSize+1); y += squareSize) { 			
+			squareMap.push([x,y,'#000',1]);				
         }
     }    
 	
@@ -179,7 +179,7 @@ function generateRoom(type) {
 		v3.goToRandomDirection();
 		if(v3.hasDirty(squareMap)) {
 			v3.cleanIt(squareMap);
-		}
+		}		
 	};
 	
 	var v4 = vacuumCleanerList[3];
