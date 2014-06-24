@@ -1,261 +1,99 @@
 function MazeMaker() {
 	var context = this;
-    var x,y,color,squareSize,canvasSize,width,height,moveCount,visitedCells,pathIndex,directionIndex, directionsArray;
+    var x,y,squareSize,canvasSize,width,height,visitedCells,pivotCell,squareMapCellsToVisit,currentNeighbors;
    
     this.init = function(properties) {
         context.x = properties.x;
         context.y = properties.y;
-        context.color = properties.color;
         context.squareSize = properties.squareSize;
         context.canvasSize = properties.canvasSize;  
         context.width = properties.squareSize;
         context.height = properties.squareSize;   
-	context.moveCount = 0;
-	context.pathIndex = -1;
-	context.directionIndex = 0;
-        context.visitedCells = 0;
-	context.directionsArray = [];
-	context.directionsArray.push(this.goUp());
-        context.directionsArray.push(this.goUpLeft());
-        context.directionsArray.push(this.goUpRight())
-	context.directionsArray.push(this.goRight());
-	context.directionsArray.push(this.goDown());
-        context.directionsArray.push(this.goDownRight());
-        context.directionsArray.push(this.goDownLeft());
-	context.directionsArray.push(this.goLeft());				
+        context.visitedCells = 0;	
+        context.pivotCell = [];
+        context.squareMapCellsToVisit = [];
+        context.currentNeighbors = [];				
     };
-
-    this.goRight = function() {	  
-        function action() {		    		   
-	    if(context.getX() < context.getCanvasSize() - context.getWidth()) {				
-		context.setX(context.getX() + context.getSquareSize());				
-		return true;
-	    } 		
-	    return false;
-	}
-	return action;
-    };
-
-    this.goLeft = function() {
-        function action() {
-            if(context.getX() > 0) {
-	        context.setX(context.getX() - context.getSquareSize());
-	        return true;
-            }
-            return false;
-        }
-        return action;
-    };
-
-    this.goUp = function() {
-	function action() {
-	    if(context.getY() > 0) {
-		context.setY(context.getY() - context.getSquareSize());
-		return true;
-	    }
-	    return false;
-	}
-	return action;
-    };
-    
-    this.goUpLeft = function() {
-	function action() {
-	    if(context.getY() > 0 && context.getX() > 0) {
-                context.setX(context.getX() - context.getSquareSize());
-		context.setY(context.getY() - context.getSquareSize());
-		return true;
-	    }
-	    return false;
-	}
-	return action;
-    };
-
-    this.goUpRight = function() {
-	function action() {
-	    if(context.getY() > 0 && (context.getX() < context.getCanvasSize() - context.getWidth())) {
-                context.setX(context.getX() + context.getSquareSize());
-		context.setY(context.getY() - context.getSquareSize());
-		return true;
-	    }
-	    return false;
-	}
-	return action;
-    };
-
-    this.goDown = function() {
-	function action() {
-	    if(context.getY() < context.getCanvasSize() - context.getHeight()) {
-		context.setY(context.getY() + context.getSquareSize());
-		return true;
-	    }
-	    return false;
-	}
-	return action;
-    };
-       
-    this.goDownLeft = function() {
-	function action() {
-	    if(context.getY() < context.getCanvasSize() - context.getHeight() && (context.getX() > 0)) {
-                context.setX(context.getX() - context.getSquareSize());
-		context.setY(context.getY() + context.getSquareSize());
-		return true;
-	    }
-	    return false;
-	}
-	return action;
-    };
-
-    this.goDownRight = function() {
-	function action() {
-	    if(context.getY() < context.getCanvasSize() - context.getHeight() && 
-              (context.getX() < context.getCanvasSize() - context.getWidth())) {
-                context.setX(context.getX() + context.getSquareSize());	
-		context.setY(context.getY() + context.getSquareSize());
-		return true;
-	    }
-	    return false;
-	}
-	return action;
-    };
-
-    this.goToRandomDirection = function() {
-        return context.getDirectionsArray()[Math.floor(Math.random()*context.getDirectionsArray().length)]();
-    }
 	
-    this.makeTheMaze = function(squareMap) {	   
-        var found = context.hasNeighborsWithAllWalls(squareMap);
-        if(found) { 
-            context.visitedCells++;
-            context.goToRandomDirection();
-            if(context.hasWall(squareMap)) {
-	        //...break the wall.
-	        context.breakTheWall(squareMap);			
-	    }
-        } else { 
-            context.goToRandomDirection();
+    this.initCellsToVisit = function(squareMap) {
+        for(var i=0;i<squareMap.length;i++) {	
+	   if(squareMap[i][3]==2) {
+	      context.squareMapCellsToVisit.push(squareMap[i]);				   
+	   }
+	}
+        //Initialize the pivot cell with a random cell... 
+        context.pivotCell = context.squareMapCellsToVisit[Math.floor(Math.random()*context.squareMapCellsToVisit.length)];
+    }; 
+
+    this.makeTheMaze = function(squareMap) { 
+        //With the selected random pivot cell, check for unvisited neighbors... 	   
+        var found = context.hasUnvisitedNeighbors(context.pivotCell);
+        if(found) {                 		  	
+            //...if it has unvisited neighbors, choose a random one... 
+	    var randomNeighbor = context.currentNeighbors[Math.floor(Math.random()*context.currentNeighbors.length)];
+            //Destroy the Wall between the original cell and the current random cell
+            context.breakTheWallBetweenCells(squareMap,context.pivotCell,randomNeighbor);
+            //Make the current random cell the origin cell
+            context.pivotCell = randomNeighbor; 	   
+        } else {
+            context.pivotCell = context.squareMapCellsToVisit[Math.floor(Math.random()*context.squareMapCellsToVisit.length)];
+	}		
+    }; 	    
+
+    this.hasUnvisitedNeighbors = function (pivotCell) {       
+        context.currentNeighbors = [];
+        for(var i=0;i<context.squareMapCellsToVisit.length;i++) {
+           //UP
+           if((context.squareMapCellsToVisit[i][0]==pivotCell[0] && context.squareMapCellsToVisit[i][1]==(pivotCell[1]-(context.squareSize * 2))) ||
+             //Down
+             (context.squareMapCellsToVisit[i][0]==pivotCell[0] && context.squareMapCellsToVisit[i][1]==(pivotCell[1]+(context.squareSize * 2))) ||
+             //Right
+             (context.squareMapCellsToVisit[i][0]==(pivotCell[0]+(context.squareSize * 2)) && context.squareMapCellsToVisit[i][1]==pivotCell[1]) ||
+             //Left
+             (context.squareMapCellsToVisit[i][0]==(pivotCell[0]-(context.squareSize * 2)) && context.squareMapCellsToVisit[i][1]==(pivotCell[1] - (context.squareSize * 2)))) {
+               if(context.squareMapCellsToVisit[i][3]==2) {
+                   context.currentNeighbors.push(context.squareMapCellsToVisit[i]);
+                   return true;
+               } 
+           }      
         }	
-    }; 	   
-  
-    this.hasNeighborsWithAllWalls = function (squareMap) {        
-        var allWithWalls = false;
-        for(var i=0;i<squareMap.length;i++) {
-                //Up 
-	    if(((squareMap[i][0]==context.getX()) && (squareMap[i][1]==context.getY()-context.squareSize*2)) ||
-               //Down 
-               ((squareMap[i][0]==context.getX()) && (squareMap[i][1]==context.getY()+context.squareSize*2)) ||
-               //Left
-               ((squareMap[i][0]==context.getX()-context.squareSize*2) && (squareMap[i][1]==context.getY())) ||
-               //Right
-               ((squareMap[i][0]==context.getX()+context.squareSize*2) && (squareMap[i][1]==context.getY())) ||
-               //UP-LEFT
-               ((squareMap[i][0]==context.getX()-context.squareSize*2) && (squareMap[i][1]==context.getY()-context.squareSize*2)) ||
-               //UP-RIGHT
-               ((squareMap[i][0]==context.getX()+context.squareSize*2) && (squareMap[i][1]==context.getY()-context.squareSize*2)) ||
-               //DOWN-LEFT
-               ((squareMap[i][0]==context.getX()-context.squareSize*2) && (squareMap[i][1]==context.getY()+context.squareSize*2)) ||
-               //DOWN-RIGHT
-               ((squareMap[i][0]==context.getX()+context.squareSize*2) && (squareMap[i][1]==context.getY()+context.squareSize*2))) {
-		if(squareMap[i][2]=='#000'){								
-                    allWithWalls  = true;	
-	        } else {                           
-                    return false;                
-                }
-	    } 
-        }        
-        return allWithWalls;
+        return false;	
     };    
 
-    this.hasWall = function(squareMap) {    
-        for(var i=0;i<squareMap.length;i++) {
-	    if(squareMap[i][0]==context.getX() && squareMap[i][1]==context.getY()) {
-		if(squareMap[i][2]=='#000'){
-	  	    context.setPathIndex(i);										
-		    return true;	
-	        } 
-	    } 
-	}
-	return false;
+    this.breakTheWallBetweenCells = function(squareMap,pivotCell,randomNeighbor) {
+        var x = 0, y = 0;	
+        if(randomNeighbor[0] == pivotCell[0]) {
+            x = pivotCell[0];         
+        } else if (randomNeighbor[0] < pivotCell[0]) {
+            x = pivotCell[0] - context.squareSize;
+        } else {
+            x = pivotCell[0] + context.squareSize;
+        }
+        if(randomNeighbor[1] == pivotCell[1]) {
+            y = pivotCell[1];         
+        } else if (randomNeighbor[1] < pivotCell[1]) {
+            y = pivotCell[1] - context.squareSize;
+        } else {
+            y = pivotCell[1] + context.squareSize;
+        }
+        if((x > 0 && y > 0) && (x < context.canvasSize - context.width) && (y < context.canvasSize - context.height)) {
+            for(var i=0;i<squareMap.length;i++) {
+                if(pivotCell[0]==squareMap[i][0] && pivotCell[1]==squareMap[i][1]) {
+                    squareMap[i][3] = 1;
+                }
+                if(x==squareMap[i][0] && y==squareMap[i][1]) {
+                    squareMap[i][2] = '#fff';
+                }
+            }
+        }
     };
 
-    this.breakTheWall = function(squareMap) {
-	if(squareMap[context.getPathIndex()][3]==0) {
-	    squareMap[context.getPathIndex()][2] = (Math.floor(Math.random()*2)%2==0)?'#fff':'#bbb';
-            squareMap[context.getPathIndex()][3] = 1;	
-	    context.setPathIndex(-1);
+    this.hasCellsToVisit = function() {
+        for(var i=0;i<context.squareMapCellsToVisit.length;i++) {	
+	   if(context.squareMapCellsToVisit[i][3]==2) {
+	      return true;				   
+	   }
 	}
+        return false;
     };
-	
-    /*Get's*/
-    this.getX = function() {
-	return context.x;
-    }
-	
-    this.getY = function() {
-	return context.y;
-    }
-
-    this.getWidth= function() {
-	return context.width;
-    }
-
-    this.getHeight = function() {
-	return context.height;
-    }
-
-    this.getColor = function() {
-	return context.color;
-    }		
-
-    this.getCanvasSize = function() {
-	return context.canvasSize;
-    }
-
-    this.getSquareSize = function() {
-	return context.squareSize;
-    }
-
-    this.getDirectionsArray = function() {
-	return context.directionsArray;
-    }
-
-    this.getDirectionIndex = function() {
-	return context.directionIndex;
-    }	
-
-    this.getPathIndex = function() {
-	return context.pathIndex;
-    }
-
-    this.getVisitedCells = function() {
-	return context.visitedCells;
-    }
-
-    /*Set's*/
-    this.setX = function(newX) {
-	context.x = newX;
-    }
-
-    this.setY = function(newY) {
-	context.y = newY;
-    }
-
-    this.setCanvasSize = function(newCanvasSize) {
-	context.canvasSize = newCanvasSize;
-    }
-
-    this.setSquareSize = function(newSquareSize) {
-	context.squareSize = newSquareSize;
-    }
-
-    this.setDirectionsArray = function(newDirectionsArray) {
-	context.directionsArray = newDirectionsArray;
-    }
-
-    this.setDirectionIndex = function(newDirectionIndex) {
-	context.directionIndex = newDirectionIndex;
-    }
-
-    this.setPathIndex = function(newPathIndex) {
-	context.pathIndex = newPathIndex;
-    }
 }
