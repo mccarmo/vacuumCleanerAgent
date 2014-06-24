@@ -22,12 +22,12 @@ function VacuumCleaner() {
     this.goRight = function() {	  
         function action() {		    		   
 	    if(context.getX() < context.getCanvasSize() - context.getWidth()) {				
-		context.setX(context.getX() + context.getSquareSize());				
-		if(context.hasObstacle()) {
-		    context.setX(context.getX() - context.getSquareSize());
-		    return false; 
-		}
-		    return true;
+			context.setX(context.getX() + context.getSquareSize());				
+			if(context.hasObstacle()) {
+				context.setX(context.getX() - context.getSquareSize());
+				return false; 
+			}
+			return true;
 		} 		
 	    return false;
 	}
@@ -88,7 +88,7 @@ function VacuumCleaner() {
     this.hasObstacle = function() {
         for(var i=0;i<squareMap.length;i++) {
 			if(squareMap[i][0]==context.getX() && squareMap[i][1]==context.getY()) {
-				if(squareMap[i][2]=='#000'){
+				if(squareMap[i][3]==1){
 					return true;	
 				} 
 			} 
