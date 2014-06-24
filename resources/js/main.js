@@ -201,22 +201,25 @@ function generateRoom(type) {
 	};
 		
     if(type=='random') {        
-		createRandomDirtyRoom();
+	createRandomDirtyRoom();
     } else if (type=='maze') {	     
-		v1.x = squareSize;
-		v1.y = squareSize;
-		
-		v2.x = canvasSize - squareSize*2;
-		v2.y = squareSize;
+	v1.x = squareSize;
+	v1.y = squareSize;
 	
-		v3.x = squareSize;
-		v3.y = canvasSize - squareSize*2;
-	
-		v4.x = canvasSize - squareSize*2;
-		v4.y = canvasSize - squareSize*2;
-	
-		createMazeDirtyRoom();
-	}
+	v2.x = canvasSize - squareSize*2;
+	v2.y = squareSize;
 
+	v3.x = squareSize;
+	v3.y = canvasSize - squareSize*2;
+
+	v4.x = canvasSize - squareSize*2;
+	v4.y = canvasSize - squareSize*2;
+
+	createMazeDirtyRoom();
+    }
+    
+    document.getElementById('btnRandomRoom').disabled = true;
+    document.getElementById('btnMazeRoom').disabled = true;
+    
     animate(vacuumCleanerList, canvas, context);
 }
