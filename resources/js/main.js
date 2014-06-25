@@ -1,6 +1,6 @@
 var squareMap = [];
 var squareTypes = ['#fff','#000','#bbb']; //#fff - clean / 1 - #bbb - dirty / 2 - #000 - obstacle
-var squareSize = 60;
+var squareSize = 30;
 var canvasSize = 600+squareSize;	
 var canvas = '';
 
