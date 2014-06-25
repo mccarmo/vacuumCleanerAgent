@@ -1,22 +1,23 @@
 function VacuumCleaner() {
     var context = this;
-    var x,y,color,squareSize,canvasSize,width,height, dirtyIndex = -1, directionIndex = 0, directionsArray;
+    var x,y,color,squareSize,canvasSize,width,height,dirtyIndex, directionIndex,directionsArray,score;
    
     this.init = function(properties) {
         context.x = properties.x;
         context.y = properties.y;
-		context.color = properties.color;
+	context.color = properties.color;
         context.squareSize = properties.squareSize;
         context.canvasSize = properties.canvasSize;
         context.width = properties.squareSize;
         context.height = properties.squareSize;        
-		context.dirtyIndex = -1;
-		context.directionIndex = 0;
-		context.directionsArray = [];
-		context.directionsArray.push(context.goUp());
-		context.directionsArray.push(context.goRight());
-		context.directionsArray.push(context.goDown());
-		context.directionsArray.push(context.goLeft());				
+	context.dirtyIndex = -1;
+	context.directionIndex = 0;
+	context.directionsArray = [];
+        context.score = 0;	
+        context.directionsArray.push(context.goUp());
+	context.directionsArray.push(context.goRight());
+	context.directionsArray.push(context.goDown());
+	context.directionsArray.push(context.goLeft());				
     };
     
     this.goRight = function() {	  
@@ -110,6 +111,7 @@ function VacuumCleaner() {
 
     this.cleanIt = function(squareMap) {
         squareMap[context.getDirtyIndex()][2] = '#fff';
+        context.score++;
         context.setDirtyIndex(-1);
     };
 	

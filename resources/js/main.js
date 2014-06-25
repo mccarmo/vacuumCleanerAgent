@@ -1,6 +1,6 @@
 var squareMap = [];
 var squareTypes = ['#fff','#000','#bbb']; //#fff - clean / 1 - #bbb - dirty / 2 - #000 - obstacle
-var squareSize = 30;
+var squareSize = 60;
 var canvasSize = 600+squareSize;	
 var canvas = '';
 
@@ -13,6 +13,9 @@ function drawAgent(vacuumCleaner, context) {
     context.lineWidth = vacuumCleaner.borderWidth;
     context.strokeStyle = 'black';
     context.stroke();
+    context.fillStyle = "blue";
+    context.font = "bold 16px Arial";
+    context.fillText(vacuumCleaner.score, vacuumCleaner.x + 5, vacuumCleaner.y+20);
 }
 
 //Function to draw the random dirty room
