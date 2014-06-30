@@ -17,30 +17,32 @@ function MazeMaker() {
 	
     this.initCellsToVisit = function(squareMap) {
         for(var i=0;i<squareMap.length;i++) {	
-		   if(squareMap[i][3]==2) {
-			  context.squareMapCellsToVisit.push(squareMap[i]);				   
-		   }
-		}
+	   if(squareMap[i][3]==2) {
+		  context.squareMapCellsToVisit.push(squareMap[i]);				   
+	   }
+	}
         //Initialize the pivot cell with a random cell... 
         context.pivotCell = context.squareMapCellsToVisit[Math.floor(Math.random()*context.squareMapCellsToVisit.length)];
     }; 
 
     this.makeTheMaze = function(squareMap) { 
-		//Mark current selected pivot cell as visited...
-		if(context.pivotCell[3]==2) {			
-			context.markAsVisited(squareMap);
-			//With the selected random pivot cell, check for unvisited neighbors... 	         		        
-			if(context.hasUnvisitedNeighbors(context.pivotCell)) {                 		  	
-				//...if it has unvisited neighbors, choose a random one... 
-				var randomNeighbor = context.currentNeighbors[Math.floor(Math.random()*context.currentNeighbors.length)];
-				//Destroy the Wall between the pivot cell and the current random cell
-				context.breakTheWallBetweenCells(squareMap,context.pivotCell,randomNeighbor);
-				//Make the current random cell the pivot cell
-				context.pivotCell = randomNeighbor; 	   
-			} else {			
-				context.pivotCell = context.squareMapCellsToVisit[Math.floor(Math.random()*context.squareMapCellsToVisit.length)];		
-			}	
-	    }
+	//Mark current selected pivot cell as visited...
+	if(context.pivotCell[3]==2) {			
+	    context.markAsVisited(squareMap);
+	    //With the selected random pivot cell, check for unvisited neighbors... 	         		        
+	    if(context.hasUnvisitedNeighbors(context.pivotCell)) {                 		  	
+		//...if it has unvisited neighbors, choose a random one... 
+		var randomNeighbor = context.currentNeighbors[Math.floor(Math.random()*context.currentNeighbors.length)];
+		//Destroy the Wall between the pivot cell and the current random cell
+		context.breakTheWallBetweenCells(squareMap,context.pivotCell,randomNeighbor);
+		//Make the current random cell the pivot cell
+		context.pivotCell = randomNeighbor; 	   
+	    } else {			
+		context.pivotCell = context.squareMapCellsToVisit[Math.floor(Math.random()*context.squareMapCellsToVisit.length)];		
+	    }	
+        } else {
+            context.pivotCell = context.squareMapCellsToVisit[Math.floor(Math.random()*context.squareMapCellsToVisit.length)];        
+        }
     }; 	    
 
     this.hasUnvisitedNeighbors = function (pivotCell) {       

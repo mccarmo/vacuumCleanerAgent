@@ -1,6 +1,6 @@
 var squareMap = [];
 var squareTypes = ['#fff','#000','#bbb']; //#fff - clean / 1 - #bbb - dirty / 2 - #000 - obstacle
-var squareSize = 60;
+var squareSize = 30;
 var canvasSize = 600+squareSize;	
 var canvas = '';
 
@@ -122,10 +122,10 @@ function generateRoom(type) {
 	  and give then some brain (chooseDestiny function)....*/
 	for(var i = 0;i<4;i++) {
 		var vacuumCleaner = new VacuumCleaner();
-		vacuumCleaner.init({'x':0,'y':0,'squareSize':squareSize,'canvasSize':canvasSize});
+		vacuumCleaner.init({'x':0,'y':0,'stepSize':squareSize,'squareSize':squareSize,'canvasSize':canvasSize});
 		vacuumCleanerList.push(vacuumCleaner);		
 	}
-		
+	
 	var v1 = vacuumCleanerList[0];
 	v1.color = '#afa';
 	v1.chooseDestiny = function(squareMap) {	    		

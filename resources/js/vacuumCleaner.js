@@ -1,6 +1,6 @@
 function VacuumCleaner() {
     var context = this;
-    var x,y,color,squareSize,canvasSize,width,height,dirtyIndex, directionIndex,directionsArray,score;
+    var x,y,color,squareSize,canvasSize,stepSize,width,height,dirtyIndex, directionIndex,directionsArray,score;
    
     this.init = function(properties) {
         context.x = properties.x;
@@ -8,6 +8,7 @@ function VacuumCleaner() {
 	context.color = properties.color;
         context.squareSize = properties.squareSize;
         context.canvasSize = properties.canvasSize;
+        context.stepSize = properties.stepSize;
         context.width = properties.squareSize;
         context.height = properties.squareSize;        
 	context.dirtyIndex = -1;
@@ -23,9 +24,9 @@ function VacuumCleaner() {
     this.goRight = function() {	  
         function action() {		    		   
 	    if(context.getX() < context.getCanvasSize() - context.getWidth()) {				
-			context.setX(context.getX() + context.getSquareSize());				
+			context.setX(context.getX() + context.getStepSize());				
 			if(context.hasObstacle()) {
-				context.setX(context.getX() - context.getSquareSize());
+				context.setX(context.getX() - context.getStepSize());
 				return false; 
 			}
 			return true;
@@ -38,9 +39,9 @@ function VacuumCleaner() {
     this.goLeft = function() {
         function action() {
             if(context.getX() > 0) {
-				context.setX(context.getX() - context.getSquareSize());
+				context.setX(context.getX() - context.getStepSize());
 				if(context.hasObstacle()) {
-					context.setX(context.getX() + context.getSquareSize());
+					context.setX(context.getX() + context.getStepSize());
 					return false; 
 				}
 				return true;
@@ -53,9 +54,9 @@ function VacuumCleaner() {
     this.goUp = function() {
 		function action() {
 			if(context.getY() > 0) {
-				context.setY(context.getY() - context.getSquareSize());
+				context.setY(context.getY() - context.getStepSize());
 				if(context.hasObstacle()) {
-					context.setY(context.getY() + context.getSquareSize());
+					context.setY(context.getY() + context.getStepSize());
 					return false; 
 				}
 				return true;
@@ -68,9 +69,9 @@ function VacuumCleaner() {
     this.goDown = function() {
 	function action() {
 		if(context.getY() < context.getCanvasSize() - context.getHeight()) {
-			context.setY(context.getY() + context.getSquareSize());
+			context.setY(context.getY() + context.getStepSize());
 			if(context.hasObstacle()) {
-				context.setY(context.getY() - context.getSquareSize());
+				context.setY(context.getY() - context.getStepSize());
 				return false; 
 			}
 			return true;
@@ -142,6 +143,10 @@ function VacuumCleaner() {
 
     this.getSquareSize = function() {
 	return context.squareSize;
+    }
+ 
+    this.getStepSize = function() {
+        return context.stepSize;
     }
 
     this.getDirectionsArray = function() {
